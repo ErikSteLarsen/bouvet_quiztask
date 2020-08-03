@@ -21,3 +21,5 @@ Once you are in this new empty folder run the command below to initialize the da
                                                                                                                                  
                                                                                                                                  
 *Note: Make sure to use all the correct versions of frameworks and languages to avoid encountering errors.*
+
+![QuizApp Picture](/QuizApp.png)
