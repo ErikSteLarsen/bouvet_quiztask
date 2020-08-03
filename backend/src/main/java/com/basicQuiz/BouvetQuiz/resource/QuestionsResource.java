@@ -10,7 +10,6 @@ import java.util.List;
 public class QuestionsResource {
 
     private QuestionRepo questionRepo;
-
     public QuestionsResource(QuestionRepo questionRepo) {
         this.questionRepo = questionRepo;
     }

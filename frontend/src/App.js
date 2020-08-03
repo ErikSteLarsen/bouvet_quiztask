@@ -15,25 +15,34 @@ class App extends React.Component {
             q: "Empty",
             answers: [],
             correctAnswer: null,
+            isDone: false,
         };
     }
 
     componentDidMount() {
         this.getQuestion(1);
-        //this.getQuestionText(1);
+    }
+
+    endQuiz = () => {
+        this.setState({isDone: true, q: "Quizen har ikke flere spørsmål.", answers: ["","","",""]});
+        for (let button of document.getElementsByClassName("button")) {
+            button.disabled = true;
+        }
+        document.getElementById("scoreLabel").style.visibility = "visible";
+
     }
 
     getQuestion = (id) => {
-        fetch('http://localhost:8080/' + id)
-            .then(response => response.json())
-            .then(data => this.setState({questionID: data.id, answers: [data.a1, data.a2, data.a3, data.a4], q: data.q, correctAnswer: data.correctAnswer}));
+        fetch('http://localhost:8080/' + id).then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                this.endQuiz()
+            }}).then(data => this.setState({questionID: data.id, answers: [data.a1, data.a2, data.a3, data.a4], q: data.q, correctAnswer: data.correctAnswer}))
+            .catch((error) => {
+                console.log(error)
+            });
     }
-
-    /*getQuestionText = (id) => {
-        fetch('http://localhost:8080/' + id + '/questionText')
-            .then(response => response.json())
-            .then(data => this.setState({q: data.q}));
-    }*/
 
     handleNext = () => {
         this.getQuestion(this.state.questionID+1);
@@ -65,6 +74,8 @@ class App extends React.Component {
 
         this.incrementMaxScore();
 
+
+        // Instant feedback when guessing answers, and incrementing score if correct
         if (chosenButton === correctButton) {
             document.getElementById(chosenButton).style.backgroundColor = "green";
             this.incrementScore()
@@ -74,71 +85,46 @@ class App extends React.Component {
             document.getElementById(chosenButton).style.backgroundColor = "red";
             document.getElementById(correctButton).style.backgroundColor = "green";
         }
+
+        // Disable all buttons after feedback is given
         for (let button of buttons) {
             button.disabled = true;
         }
+        // Enable "next" button
         this.setState({nextDisabled: false})
-
-        console.log(this.state.score)
     }
 
+    buttonView = (props) => {
+        const isDone = props.isDone;
+        if (isDone) {
+            return this.state.score;
+        }
+        let counter = 0;
+        return
+    }
 
     render() {
-        var counter = 0;
-      return (
+        let counter = 0;
+        return (
           <div className="App">
               <header className="App-header">
                   <p>
                       {this.state.q}
                   </p>
                   <div className="buttonContainer">
-                  {this.state.answers.map((object) => {
-                      counter += 1
-                      return (
-                          <button
-                              onClick={() => this.handleClick(object)}
-                              className={"button"}
-                              id={counter}
-                          >
-                              {object}
-                          </button>
-                      );
-                  })}
+                      {this.state.answers.map((object) => {
+                          counter += 1
+                          return (
+                              <button
+                                  onClick={() => this.handleClick(object)}
+                                  className={"button"}
+                                  id={counter}
+                              >
+                                  {object}
+                              </button>
+                          );
+                      })}
                   </div>
-
-                  {/*<div className="buttonContainer">
-                      <button
-                          onClick={() => this.handleClick("but1")}
-                          className={"button"}
-                          id={"but1"}
-                      >
-                          GET FROM BACKEND
-                      </button>
-                      <button
-                          onClick={() => this.handleClick("but2")}
-                          className={"button"}
-                          id={"but2"}
-                      >
-                          GET FROM BACKEND
-                      </button>
-
-                      <button
-                          onClick={() => this.handleClick("but3")}
-                          className={"button"}
-                          id={"but3"}
-                      >
-                          GET FROM BACKEND
-                      </button>
-
-                      <button
-                          onClick={() => this.handleClick("but4")}
-                          className={"button"}
-                          id={"but4"}
-                      >
-                          GET FROM BACKEND
-                      </button>
-                  </div>*/}
-
                   <button
                       onClick={() => this.handleNext()}
                       className={"nextButton"}
@@ -146,10 +132,14 @@ class App extends React.Component {
                   >
                       NESTE
                   </button>
+
+                  <label id="scoreLabel">Din score ble: {this.state.score}/{this.state.maxScore}</label>
               </header>
           </div>
       );
   }
+
+
 }
 
 export default App;

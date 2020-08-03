@@ -20,7 +20,25 @@
 .button {
   height: 60px;
   width: 150px;
-  margin: 10px 10px 10px 10px;
+  margin: 30px 20px 10px 20px;
   text-align: center;
   background-color: slategrey;
+  border-radius: 5px;
+  font-family: Arial;
+  font-size: 16px;
+}
+
+.nextButton {
+  height: 40px;
+  width: 150px;
+  margin: 30px 10px 10px 10px;
+  text-align: center;
+  background-color: slategrey;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+#scoreLabel {
+  visibility: hidden;
+  margin-top: 50px;
 }
