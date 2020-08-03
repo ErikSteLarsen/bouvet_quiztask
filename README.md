@@ -1,6 +1,8 @@
 # bouvet_quiztask
 A basic quiz program made for an interview at Bouvet ASA.
 
+![QuizApp Picture](/QuizApp.png)
+
 ## Frameworks and programming languages:
 ###### Backend: Java 11, Spring Boot 2.3.2
 ###### Frontend: React.js
