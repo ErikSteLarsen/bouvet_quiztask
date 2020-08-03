@@ -1,95 +1,145 @@
-import React, {useState} from 'react';
+import React, {Component} from 'react';
 /* import logo from './logo.svg'; */
 import './App.css';
 import {slategrey, green, red} from "color-name";
 
-function App() {
 
-
-  /*function isCorrect(buttons, correctButton) {
-    for (let button of buttons) {
-      console.log(button.id, correctButton, "hei")
-      if (button.id == correctButton) {
-        button.style.backgroundColor = "green"
-      } else {
-        button.style.backgroundColor = "red"
-      }
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            questionID: null,
+            score: 0,
+            maxScore: 0,
+            nextDisabled: true,
+            q: "Empty",
+            answers: [],
+            correctAnswer: null,
+            isDone: false,
+        };
     }
-  }*/
 
-  function handleClick(chosenButton) {
-    let correctButton = "but2"; // Just for the test purpose, I'm going to do this from backend
-    let buttons = document.getElementsByClassName("button");
-
-    if (chosenButton == correctButton) {
-      document.getElementById(chosenButton).style.backgroundColor = "green";
-      for (let button of buttons) {
-        button.disabled = true;
-      }
-
-    } else {
-      let button = document.getElementById(chosenButton);
-      button.style.backgroundColor = "red";
-      button.disabled = true;
+    componentDidMount() {
+        this.getQuestion(1);
     }
+
+    endQuiz = () => {
+        this.setState({isDone: true, q: "Quizen har ikke flere spørsmål.", answers: ["","","",""]});
+        for (let button of document.getElementsByClassName("button")) {
+            button.disabled = true;
+        }
+        document.getElementById("scoreLabel").style.visibility = "visible";
+
+    }
+
+    getQuestion = (id) => {
+        fetch('http://localhost:8080/' + id).then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                this.endQuiz()
+            }}).then(data => this.setState({questionID: data.id, answers: [data.a1, data.a2, data.a3, data.a4], q: data.q, correctAnswer: data.correctAnswer}))
+            .catch((error) => {
+                console.log(error)
+            });
+    }
+
+    handleNext = () => {
+        this.getQuestion(this.state.questionID+1);
+        let buttons = document.getElementsByClassName("button");
+        for (let button of buttons) {
+            button.disabled = false;
+            button.style.backgroundColor = "slategray";
+        }
+        this.setState({nextDisabled: true})
+    }
+
+    incrementScore = () => {
+        this.setState((state) => {
+            return {score: state.score + 1}
+        });
+    }
+
+    incrementMaxScore = () => {
+        this.setState((state) => {
+            return {maxScore: state.maxScore + 1}
+        });
+    }
+
+    handleClick = (chosenButton) => {
+        let correctButton = this.state.correctAnswer;
+        let buttons = document.getElementsByClassName("button");
+
+        chosenButton = this.state.answers.indexOf(chosenButton)+1
+
+        this.incrementMaxScore();
+
+
+        // Instant feedback when guessing answers, and incrementing score if correct
+        if (chosenButton === correctButton) {
+            document.getElementById(chosenButton).style.backgroundColor = "green";
+            this.incrementScore()
+        }
+        else {
+                console.log(correctButton, chosenButton)
+            document.getElementById(chosenButton).style.backgroundColor = "red";
+            document.getElementById(correctButton).style.backgroundColor = "green";
+        }
+
+        // Disable all buttons after feedback is given
+        for (let button of buttons) {
+            button.disabled = true;
+        }
+        // Enable "next" button
+        this.setState({nextDisabled: false})
+    }
+
+    buttonView = (props) => {
+        const isDone = props.isDone;
+        if (isDone) {
+            return this.state.score;
+        }
+        let counter = 0;
+        return
+    }
+
+    render() {
+        let counter = 0;
+        return (
+          <div className="App">
+              <header className="App-header">
+                  <p>
+                      {this.state.q}
+                  </p>
+                  <div className="buttonContainer">
+                      {this.state.answers.map((object) => {
+                          counter += 1
+                          return (
+                              <button
+                                  onClick={() => this.handleClick(object)}
+                                  className={"button"}
+                                  id={counter}
+                              >
+                                  {object}
+                              </button>
+                          );
+                      })}
+                  </div>
+                  <button
+                      onClick={() => this.handleNext()}
+                      className={"nextButton"}
+                      disabled={this.state.nextDisabled}
+                  >
+                      NESTE
+                  </button>
+
+                  <label id="scoreLabel">Din score ble: {this.state.score}/{this.state.maxScore}</label>
+              </header>
+          </div>
+      );
   }
 
-  function resetButtons() {
-    let buttons = document.getElementsByClassName("button");
-    for (let button of buttons) {
-      button.disabled = false;
-      button.style.backgroundColor = "slategray";
-    }
-  }
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          PLACEHOLDER FOR QUESTION WITH THIS APPROXIMATE LENGTH
-        </p>
-        <div className="buttonContainer">
-            <button
-                onClick={() => handleClick("but1")}
-                className={"button"}
-                id={"but1"}
-            >
-              GET FROM BACKEND
-            </button>
-            <button
-                onClick={() => handleClick("but2")}
-                className={"button"}
-                id={"but2"}
-            >
-              GET FROM BACKEND
-            </button>
-
-            <button
-                onClick={() => handleClick("but3")}
-                className={"button"}
-                id={"but3"}
-            >
-              GET FROM BACKEND
-            </button>
-
-            <button
-                onClick={() => handleClick("but4")}
-                className={"button"}
-                id={"but4"}
-            >
-              GET FROM BACKEND
-            </button>
-        </div>
-
-        <button
-        onClick={() => resetButtons()}
-        className={"asd"}
-        >
-        NESTE
-        </button>
-      </header>
-    </div>
-  );
 }
 
 export default App;
