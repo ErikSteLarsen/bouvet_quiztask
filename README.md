@@ -1,8 +1,6 @@
 # bouvet_quiztask
 A basic quiz program made for an interview at Bouvet ASA.
 
-![QuizApp Picture](/QuizApp.png)
-
 ## Frameworks and programming languages:
 ###### Backend: Java 11, Spring Boot 2.3.2
 ###### Frontend: React.js
@@ -23,3 +21,5 @@ Once you are in this new empty folder run the command below to initialize the da
                                                                                                                                  
                                                                                                                                  
 *Note: Make sure to use all the correct versions of frameworks and languages to avoid encountering errors.*
+
+![QuizApp Picture](/QuizApp.png)
