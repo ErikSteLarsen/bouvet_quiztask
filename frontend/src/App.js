@@ -1,7 +1,5 @@
-import React, {Component} from 'react';
-/* import logo from './logo.svg'; */
+import React from 'react';
 import './App.css';
-import {slategrey, green, red} from "color-name";
 
 
 class App extends React.Component {
@@ -119,6 +117,7 @@ class App extends React.Component {
                                   onClick={() => this.handleClick(object)}
                                   className={"button"}
                                   id={counter}
+                                  key={counter}
                               >
                                   {object}
                               </button>

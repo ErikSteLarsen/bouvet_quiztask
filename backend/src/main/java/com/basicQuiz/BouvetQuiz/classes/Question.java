@@ -1,4 +1,4 @@
-package com.basicQuiz.BouvetQuiz.questions;
+package com.basicQuiz.BouvetQuiz.classes;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
