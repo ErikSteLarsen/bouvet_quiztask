@@ -1,6 +1,6 @@
 package com.basicQuiz.BouvetQuiz.resource;
 
-import com.basicQuiz.BouvetQuiz.questions.Question;
+import com.basicQuiz.BouvetQuiz.classes.Question;
 import com.basicQuiz.BouvetQuiz.repository.QuestionRepo;
 import org.springframework.web.bind.annotation.*;
 
