@@ -18,7 +18,7 @@ Once you are in this new empty folder run the command below to initialize the da
                                                                                                        
 1. Then the last step is to start the frontend by navigating to the `frontend` directory and then executing the below commands:
     > npm install
-    and then
+    
     > npm start
                                                                                                                                  
                                                                                                                                  
